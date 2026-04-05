@@ -179,3 +179,26 @@ Board = основной канал координации. Полное опи�
 
 Заметки → `obsidian/`, справочники → `references/`, проекты → `projects/`, скрипты → `scripts/`.
 **Каждый .md в корне = +N KB в system prompt. Не мусорить.**
+
+## Cursor Cloud specific instructions
+
+### Overview
+This is a multi-agent AI team system ("Heisenberg Team") built on the [OpenClaw](https://github.com/openclaw/openclaw) platform. It's a configuration/template project — the runtime is provided by the globally-installed `openclaw` CLI.
+
+### Key services
+| Service | How to run | Notes |
+|---------|-----------|-------|
+| OpenClaw Gateway | `openclaw gateway run --allow-unconfigured --dev` | Core runtime. Starts on `ws://127.0.0.1:18789`. Requires LLM API key for agent interaction (set via `openclaw init` or env vars). |
+
+### Running tests & checks
+- **Smoke test:** `bash scripts/smoke-test.sh` (or `npm test`) — checks file structure, agents, scripts syntax, OpenClaw installation, and dependencies.
+- **Gateway health:** `openclaw gateway health` — pings running gateway.
+- **Script syntax check:** All `.sh` scripts are validated by the smoke test via `bash -n`.
+
+### Important caveats
+- `package.json` specifies `mcp-remote@^1.0.0` but no `1.x` version exists on npm; use `npm install @marp-team/marp-cli pptxgenjs mcp-remote@latest` instead of bare `npm install` if the lockfile is absent.
+- The `references/team-board.md` file must exist for smoke tests to pass. Create it from the template: `cp references/team-board.md.example references/team-board.md`.
+- The 375+ `{{PLACEHOLDER}}` warnings in smoke tests are expected — they get replaced by `scripts/setup-wizard.sh` (interactive, requires user input).
+- `scripts/system-health.sh` uses macOS `vm_stat` and won't work on Linux; this is a known limitation.
+- The gateway can start in `--dev` mode without prior `openclaw init`, using `--allow-unconfigured`. Full agent interaction requires an LLM API key.
+- Python deps install to user site-packages (`~/.local/lib/python3.12`). Ensure `~/.local/bin` is on PATH if needed.
