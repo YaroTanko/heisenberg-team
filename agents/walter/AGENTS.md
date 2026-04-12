@@ -33,6 +33,9 @@ Team Lead. Техническое производство: код, скиллы
 | minimax-pdf | Генерация PDF |
 | quality-check | ОТК перед сдачей |
 | skill-and-agent-creator | Создание/улучшение скиллов |
+| llm-wiki-ingest | Загрузка источника в llm-wiki |
+| llm-wiki-query | Поиск и ответы по llm-wiki |
+| llm-wiki-lint | Аудит здоровья llm-wiki |
 
 ---
 

@@ -32,6 +32,7 @@
 {{PAID_GROUP_NAME}} → `methodologist` + `copywriter` | Воронки → `creator-marketing`
 PDF → `nano-pdf` | Ресёрч → `deep-research-pro` | Reddit/X → `last30days`
 Бизнес → `business-architect` | Презентации → `presentation` | Астро → `astrologer`
+Вики (ingest) → `llm-wiki-ingest` | Вики (query) → `llm-wiki-query` | Вики (lint) → `llm-wiki-lint`
 
 ---
 
