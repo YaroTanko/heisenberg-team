@@ -15,5 +15,16 @@ else
   echo "⚠️  Auto-apply failed (exit $?). Run manually: bash scripts/apply.sh"
 fi
 
+if command -v openclaw >/dev/null 2>&1; then
+  echo "🔄 Restarting OpenClaw gateway..."
+  if openclaw gateway restart 2>&1; then
+    echo "✅ Gateway restarted."
+  else
+    echo "⚠️  Gateway restart failed. Run manually: openclaw gateway restart"
+  fi
+else
+  echo "⚠️  openclaw not found, skipping gateway restart."
+fi
+
 # Always exit 0 so git operations are never blocked by hook failures.
 exit 0
