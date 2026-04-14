@@ -1,9 +1,12 @@
 #!/bin/bash
-# post-merge hook — auto-apply after git pull
+# post-merge hook — auto-apply, restart, and verify after git pull
 # Installed by: bash scripts/apply.sh --install-hooks
 #
-# This hook runs apply.sh (without verification for speed) every time
-# git pull brings new commits. It never blocks git operations.
+# After git pull brings new commits, this hook:
+#   1. Applies repo changes to OpenClaw runtime and workspaces
+#   2. Restarts the OpenClaw gateway
+#   3. Verifies system status with smoke test
+# It never blocks git operations (always exits 0).
 
 SCRIPT_DIR="$(cd "$(dirname "$0")/../../scripts" && pwd)"
 
@@ -22,8 +25,20 @@ if command -v openclaw >/dev/null 2>&1; then
   else
     echo "⚠️  Gateway restart failed. Run manually: openclaw gateway restart"
   fi
+
+  echo ""
+  echo "🧪 Running smoke test..."
+  if bash "$SCRIPT_DIR/smoke-test.sh"; then
+    echo "✅ Smoke test passed."
+  else
+    echo "⚠️  Smoke test failed. Run manually: bash scripts/smoke-test.sh"
+  fi
+
+  echo ""
+  echo "📊 Checking OpenClaw status..."
+  openclaw status 2>&1 || echo "⚠️  Could not retrieve OpenClaw status."
 else
-  echo "⚠️  openclaw not found, skipping gateway restart."
+  echo "⚠️  openclaw not found, skipping gateway restart and status check."
 fi
 
 # Always exit 0 so git operations are never blocked by hook failures.
