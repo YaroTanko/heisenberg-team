@@ -228,31 +228,31 @@ echo ""
 echo -e "${BOLD}Step 3/5: Applying configuration...${NC}"
 echo ""
 
-# Build replacement pairs
-declare -A REPLACEMENTS=(
-  ["{{OWNER_NAME}}"]="${OWNER_NAME}"
-  ["{{OWNER_USERNAME}}"]="${OWNER_USERNAME}"
-  ["{{OWNER_TELEGRAM_ID}}"]="${OWNER_TELEGRAM_ID:-YOUR_TELEGRAM_ID}"
-  ["{{TELEGRAM_CHANNEL}}"]="${TELEGRAM_CHANNEL:-YOUR_CHANNEL}"
-  ["{{BOT_USERNAME}}"]="${BOT_USERNAME:-@YourBot_bot}"
-  ["{{OWNER_SURNAME}}"]="${OWNER_SURNAME:-Surname}"
-  ["{{COUNTRY}}"]="${COUNTRY:-Country}"
-  ["{{CITY}}"]="${CITY:-City}"
-  ["{{GITHUB_ORG}}"]="${GITHUB_ORG:-$OWNER_USERNAME}"
-  ["{{WORKSPACE_PATH}}"]="${WORKSPACE_PATH:-~/workspace/}"
-  ["{{PROJECTS_PATH}}"]="${WORKSPACE_PATH:-~/workspace/}projects/"
-  ["{{MAIN_MODEL}}"]="${MAIN_MODEL:-anthropic/claude-opus-4-6}"
-  ["{{COORDINATOR_MODEL}}"]="${COORDINATOR_MODEL:-${MAIN_MODEL:-anthropic/claude-opus-4-6}}"
-  ["{{TECH_MODEL}}"]="${TECH_MODEL:-anthropic/claude-sonnet-4-6}"
-  ["{{WORKER_MODEL}}"]="${WORKER_MODEL:-anthropic/claude-haiku-4-5}"
-  ["{{CRON_MODEL}}"]="${CRON_MODEL:-google/gemini-2.5-flash}"
-  ["{{AGENT_MODEL}}"]="${AGENT_MODEL:-anthropic/claude-sonnet-4-6}"
-  ["{{EMBEDDING_PROVIDER}}"]="${EMBEDDING_PROVIDER:-openai}"
-  ["{{EMBEDDING_MODEL}}"]="${EMBEDDING_MODEL:-text-embedding-3-small}"
-  ["{{ANTHROPIC_API_KEY}}"]="${ANTHROPIC_API_KEY:-your-anthropic-key}"
-  ["{{OPENAI_API_KEY}}"]="${OPENAI_API_KEY:-your-openai-key}"
-  ["{{GOOGLE_API_KEY}}"]="${GOOGLE_API_KEY:-your-google-key}"
-  ["{{DEEPSEEK_API_KEY}}"]="${DEEPSEEK_API_KEY:-your-deepseek-key}"
+# Build replacement pairs (macOS bash 3.2 compatible; no associative arrays)
+REPLACEMENTS=(
+  "{{OWNER_NAME}}:::${OWNER_NAME}"
+  "{{OWNER_USERNAME}}:::${OWNER_USERNAME}"
+  "{{OWNER_TELEGRAM_ID}}:::${OWNER_TELEGRAM_ID:-YOUR_TELEGRAM_ID}"
+  "{{TELEGRAM_CHANNEL}}:::${TELEGRAM_CHANNEL:-YOUR_CHANNEL}"
+  "{{BOT_USERNAME}}:::${BOT_USERNAME:-@YourBot_bot}"
+  "{{OWNER_SURNAME}}:::${OWNER_SURNAME:-Surname}"
+  "{{COUNTRY}}:::${COUNTRY:-Country}"
+  "{{CITY}}:::${CITY:-City}"
+  "{{GITHUB_ORG}}:::${GITHUB_ORG:-$OWNER_USERNAME}"
+  "{{WORKSPACE_PATH}}:::${WORKSPACE_PATH:-~/workspace/}"
+  "{{PROJECTS_PATH}}:::${WORKSPACE_PATH:-~/workspace/}projects/"
+  "{{MAIN_MODEL}}:::${MAIN_MODEL:-anthropic/claude-opus-4-6}"
+  "{{COORDINATOR_MODEL}}:::${COORDINATOR_MODEL:-${MAIN_MODEL:-anthropic/claude-opus-4-6}}"
+  "{{TECH_MODEL}}:::${TECH_MODEL:-anthropic/claude-sonnet-4-6}"
+  "{{WORKER_MODEL}}:::${WORKER_MODEL:-anthropic/claude-haiku-4-5}"
+  "{{CRON_MODEL}}:::${CRON_MODEL:-google/gemini-2.5-flash}"
+  "{{AGENT_MODEL}}:::${AGENT_MODEL:-anthropic/claude-sonnet-4-6}"
+  "{{EMBEDDING_PROVIDER}}:::${EMBEDDING_PROVIDER:-openai}"
+  "{{EMBEDDING_MODEL}}:::${EMBEDDING_MODEL:-text-embedding-3-small}"
+  "{{ANTHROPIC_API_KEY}}:::${ANTHROPIC_API_KEY:-your-anthropic-key}"
+  "{{OPENAI_API_KEY}}:::${OPENAI_API_KEY:-your-openai-key}"
+  "{{GOOGLE_API_KEY}}:::${GOOGLE_API_KEY:-your-google-key}"
+  "{{DEEPSEEK_API_KEY}}:::${DEEPSEEK_API_KEY:-your-deepseek-key}"
 )
 
 # Count files to process
@@ -267,8 +267,9 @@ echo ""
 
 REPLACED_TOTAL=0
 
-for placeholder in "${!REPLACEMENTS[@]}"; do
-  value="${REPLACEMENTS[$placeholder]}"
+for replacement in "${REPLACEMENTS[@]}"; do
+  placeholder="${replacement%%:::*}"
+  value="${replacement#*:::}"
   # Escape special chars for sed
   escaped_value=$(printf '%s\n' "$value" | sed 's/[&/\]/\\&/g')
   escaped_placeholder=$(printf '%s\n' "$placeholder" | sed 's/[{}]/\\&/g')
@@ -297,62 +298,9 @@ echo ""
 # ─── Step 4: Install agents and skills ───
 echo -e "${BOLD}Step 4/5: Installing agents and skills...${NC}"
 echo ""
-
+bash "$SCRIPT_DIR/apply.sh" --skip-prereq-check --skip-verify
 OPENCLAW_DIR="$HOME/.openclaw/agents"
-
-declare -A AGENT_MAP=(
-  ["heisenberg"]="main"
-  ["saul"]="producer"
-  ["walter"]="teamlead"
-  ["jesse"]="marketing-funnel"
-  ["skyler"]="skyler"
-  ["hank"]="hank"
-  ["gus"]="kaizen"
-  ["twins"]="researcher"
-)
-
-INSTALLED=0
-for char_name in "${!AGENT_MAP[@]}"; do
-  agent_name="${AGENT_MAP[$char_name]}"
-  src="$REPO_DIR/agents/$char_name"
-  dest="$OPENCLAW_DIR/$agent_name/agent"
-
-  if [ -d "$src" ]; then
-    mkdir -p "$dest"
-    cp "$src"/*.md "$dest/"
-    echo -e "  ${GREEN}✓${NC} $char_name → $agent_name"
-    INSTALLED=$((INSTALLED + 1))
-  else
-    echo -e "  ${YELLOW}⚠${NC} $char_name not found, skipping"
-  fi
-done
-
-echo ""
-
-# Skills
 SKILLS_DEST="$OPENCLAW_DIR/producer/agent/skills"
-if [ -d "$REPO_DIR/skills" ]; then
-  mkdir -p "$SKILLS_DEST"
-  SKILL_ERRORS=0
-  SKILL_OK=0
-  for skill_dir in "$REPO_DIR/skills"/*/; do
-    skill_name=$(basename "$skill_dir")
-    if cp -r "$skill_dir" "$SKILLS_DEST/" 2>/dev/null; then
-      SKILL_OK=$((SKILL_OK + 1))
-    else
-      echo -e "  ${YELLOW}⚠${NC} Failed to copy skill: $skill_name"
-      SKILL_ERRORS=$((SKILL_ERRORS + 1))
-    fi
-  done
-  echo -e "  ${GREEN}✓${NC} $SKILL_OK skills installed"
-  if [ "$SKILL_ERRORS" -gt 0 ]; then
-    echo -e "  ${YELLOW}⚠${NC} $SKILL_ERRORS skills failed to copy"
-  fi
-else
-  echo -e "  ${RED}✗${NC} Skills directory not found!"
-fi
-
-echo ""
 
 # ─── Step 5: Verification ───
 echo -e "${BOLD}Step 5/5: Verification...${NC}"

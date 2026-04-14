@@ -29,7 +29,7 @@
 
 ## Requirements
 
-- [Node.js](https://nodejs.org/) v18+
+- [Node.js](https://nodejs.org/) v20+
 - [OpenClaw](https://github.com/openclaw/openclaw) (`npm install -g openclaw`)
 - API key for at least one LLM provider (Anthropic, OpenAI, Google, DeepSeek)
 - Telegram bot token (optional, for notifications via [@BotFather](https://t.me/BotFather))
@@ -41,7 +41,7 @@
 | RAM | 2 GB | 4 GB (8 agents) |
 | Disk | 500 MB | 2 GB (with logs/memory) |
 | OS | macOS 11+, Ubuntu 20.04+, Windows 11 (WSL2) | macOS 13+ or Ubuntu 22.04+ |
-| Node.js | 18.x | 20.x+ |
+| Node.js | 20.x | 20.x+ |
 | Network | Required (LLM API calls) | Broadband |
 
 ## What is this?
@@ -159,6 +159,12 @@ openclaw gateway start
 
 The setup wizard will ask for your name, Telegram ID, and other settings, then configure everything automatically.
 
+After any feature or repo change that should reach the live agents, run:
+
+```bash
+bash scripts/apply.sh
+```
+
 See [SETUP.md](SETUP.md) for detailed installation guide or [docs/first-task.md](docs/first-task.md) for your first walkthrough.
 
 > **Language note:** Agent personalities and team protocols are in Russian. The architecture works in any language — edit `SOUL.md` and `AGENTS.md` in each agent to change language.
@@ -208,6 +214,7 @@ bash scripts/deploy-team.sh
 
 ## Documentation
 
+- [Repository Rules](references/repository-rules.md) - canonical apply/install workflow for contributors
 - [Your First Task](docs/first-task.md) - step-by-step walkthrough
 - [Upgrade from Single Agent](docs/upgrade-from-single-agent.md) - migrate from single-agent setup
 - [Supported Providers](SETUP.md#supported-llm-providers) - Anthropic, OpenAI, Google, DeepSeek, Ollama

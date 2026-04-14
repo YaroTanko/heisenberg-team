@@ -4,7 +4,7 @@
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) v18+
+- [Node.js](https://nodejs.org/) v20+
 - [OpenClaw](https://github.com/openclaw/openclaw) installed (`npm install -g openclaw`)
 - API key for at least one LLM provider (Anthropic, OpenAI, Google, etc.)
 - Telegram bot token (recommended for notifications — create via [@BotFather](https://t.me/BotFather))
@@ -49,6 +49,12 @@ bash scripts/init-workspace.sh  # Create directories for all agents
 openclaw init                   # First time only — set LLM provider and API key
 openclaw gateway start          # Start the system
 openclaw status                 # Verify all 8 agents are active
+```
+
+After any later feature change in this repository, re-apply the repo into runtime:
+
+```bash
+bash scripts/apply.sh
 ```
 
 Send a message to your Telegram bot to test. See [docs/first-task.md](docs/first-task.md) for a walkthrough.
@@ -118,7 +124,7 @@ These placeholders appear in individual agent files and are optional:
 ### Step 4: Install Agents and Skills
 
 ```bash
-bash scripts/setup.sh
+bash scripts/apply.sh
 ```
 
 ### Step 5: Start and Verify
@@ -163,7 +169,7 @@ Edit `references/team-constitution.md` to change delegation rules and workflows.
 
 | Problem | Solution |
 |---------|----------|
-| Setup wizard fails | Check Node.js v18+ and OpenClaw installed |
+| Setup wizard fails | Check Node.js v20+ and OpenClaw installed |
 | Agent not responding | `openclaw status`, then `openclaw gateway restart` |
 | Skills not loading | Check `ls ~/.openclaw/agents/producer/agent/skills/` |
 | Telegram not working | Verify `OWNER_TELEGRAM_ID` is set (digits only) |
@@ -191,3 +197,5 @@ This repository contains a full team of 8 AI agents. To deploy the complete team
 3. Config examples are in `configs/`
 
 > 💡 **Start small:** Deploy Heisenberg first, add other agents as needed.
+>
+> After every feature update, use `bash scripts/apply.sh` to refresh runtime and workspaces from the repo.
