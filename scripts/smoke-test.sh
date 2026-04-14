@@ -7,12 +7,40 @@ GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
+ALL_AGENTS=(heisenberg saul walter jesse skyler hank gus twins)
+TARGET_AGENTS=("${ALL_AGENTS[@]}")
 ERRORS=0
 WARNINGS=0
+
+usage() {
+  cat <<'EOF'
+Usage: bash scripts/smoke-test.sh [options]
+
+Options:
+  --agents a,b,c   Test only the listed agents (comma-separated)
+  --help, -h       Show this help
+EOF
+}
+
+while [ $# -gt 0 ]; do
+  case "$1" in
+    --agents)
+      shift
+      IFS=',' read -r -a TARGET_AGENTS <<< "$1"
+      TARGET_AGENTS=("${TARGET_AGENTS[@]// /}")
+      ;;
+    --help|-h)
+      usage
+      exit 0
+      ;;
+  esac
+  shift
+done
 
 echo ""
 echo "🧪 Heisenberg Team — Smoke Test"
 echo "================================="
+echo "Agents under test: ${TARGET_AGENTS[*]}"
 echo ""
 
 # 1. Check critical files
@@ -37,9 +65,9 @@ fi
 
 echo ""
 
-# 2. Check all 8 agents
+# 2. Check agents
 echo "Checking agents..."
-for agent in heisenberg saul walter jesse skyler hank gus twins; do
+for agent in "${TARGET_AGENTS[@]}"; do
   dir="agents/$agent"
   if [ -d "$dir" ] && [ -f "$dir/AGENTS.md" ] && [ -f "$dir/SOUL.md" ]; then
     echo -e "  ${GREEN}✓${NC} $agent"
