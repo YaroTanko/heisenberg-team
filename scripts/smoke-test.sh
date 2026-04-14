@@ -18,7 +18,7 @@ echo ""
 # 1. Check critical files
 echo "Checking critical files..."
 for f in agents/heisenberg/AGENTS.md agents/heisenberg/SOUL.md agents/heisenberg/IDENTITY.md \
-         references/team-constitution.md references/team-board.md \
+         references/team-constitution.md references/repository-rules.md scripts/apply.sh \
          README.md LICENSE SETUP.md; do
   if [ -f "$f" ]; then
     echo -e "  ${GREEN}✓${NC} $f"
@@ -27,6 +27,13 @@ for f in agents/heisenberg/AGENTS.md agents/heisenberg/SOUL.md agents/heisenberg
     ERRORS=$((ERRORS + 1))
   fi
 done
+
+if [ -f "references/team-board.md" ] || [ -f "references/team-board.md.example" ]; then
+  echo -e "  ${GREEN}✓${NC} references/team-board(.md|.example)"
+else
+  echo -e "  ${RED}✗${NC} references/team-board(.md|.example) MISSING"
+  ERRORS=$((ERRORS + 1))
+fi
 
 echo ""
 

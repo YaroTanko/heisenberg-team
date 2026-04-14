@@ -253,9 +253,10 @@ Key scripts available in `scripts/`:
 
 | Script | Command | Purpose |
 |--------|---------|---------|
+| `apply.sh` | `bash scripts/apply.sh` | Canonical re-install/apply after repo changes |
 | `trash-agent-session.sh` | `bash scripts/trash-agent-session.sh <agent>` | Reset agent session (run before new tasks) |
 | `setup-wizard.sh` | `bash scripts/setup-wizard.sh` | Interactive initial setup |
-| `setup.sh` | `bash scripts/setup.sh` | Non-interactive setup |
+| `setup.sh` | `bash scripts/setup.sh` | Compatibility wrapper for `apply.sh` |
 | `start-team.sh` | `bash scripts/start-team.sh` | Start OpenClaw gateway |
 | `stop-team.sh` | `bash scripts/stop-team.sh` | Stop OpenClaw gateway |
 | `deploy-team.sh` | `bash scripts/deploy-team.sh` | Full multi-agent deployment |

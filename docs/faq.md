@@ -48,7 +48,8 @@ Skills must be in the agent's skills directory:
 ```bash
 ls ~/.openclaw/agents/producer/agent/skills/
 ```
-If empty, re-run `bash scripts/setup.sh`.
+If empty, re-run `bash scripts/apply.sh`.
+`setup.sh` remains only as a compatibility wrapper.
 
 ### Telegram notifications don't work
 1. Verify your Telegram user ID is set (digits only, get from @userinfobot)

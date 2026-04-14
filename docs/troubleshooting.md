@@ -172,7 +172,7 @@ If some agents show as `inactive`:
 
 ```bash
 # Reinstall agent configs
-bash scripts/setup.sh
+bash scripts/apply.sh
 
 # Or manually for one agent:
 cp configs/walter.openclaw.json.example ~/.openclaw/agents/teamlead/openclaw.json
@@ -254,7 +254,7 @@ ls ~/.openclaw/agents/producer/agent/skills/
 
 If the directory is empty, re-run setup:
 ```bash
-bash scripts/setup.sh
+bash scripts/apply.sh
 ```
 
 **Check a skill file exists:**
@@ -469,7 +469,7 @@ ls ~/.openclaw/agents/
 
 Run setup:
 ```bash
-bash scripts/setup.sh
+bash scripts/apply.sh
 ```
 
 ---
@@ -509,7 +509,7 @@ ls ~/.openclaw/agents/<agent>/agent/skills/
 
 Re-run setup:
 ```bash
-bash scripts/setup.sh
+bash scripts/apply.sh
 ```
 
 ---
