@@ -1,0 +1,19 @@
+#!/bin/bash
+# post-merge hook — auto-apply after git pull
+# Installed by: bash scripts/apply.sh --install-hooks
+#
+# This hook runs apply.sh (without verification for speed) every time
+# git pull brings new commits. It never blocks git operations.
+
+SCRIPT_DIR="$(cd "$(dirname "$0")/../../scripts" && pwd)"
+
+echo ""
+echo "🔄 post-merge: auto-applying changes to OpenClaw..."
+if bash "$SCRIPT_DIR/apply.sh" --skip-verify; then
+  echo "✅ Auto-apply complete."
+else
+  echo "⚠️  Auto-apply failed (exit $?). Run manually: bash scripts/apply.sh"
+fi
+
+# Always exit 0 so git operations are never blocked by hook failures.
+exit 0

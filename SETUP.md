@@ -57,6 +57,12 @@ After any later feature change in this repository, re-apply the repo into runtim
 bash scripts/apply.sh
 ```
 
+To auto-apply after every `git pull` (installs a post-merge hook):
+
+```bash
+bash scripts/apply.sh --install-hooks
+```
+
 Send a message to your Telegram bot to test. See [docs/first-task.md](docs/first-task.md) for a walkthrough.
 
 ## Manual Setup

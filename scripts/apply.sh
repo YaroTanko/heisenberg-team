@@ -11,6 +11,7 @@ VERIFY=true
 CHECK_PREREQS=true
 RUNTIME_ONLY=false
 WORKSPACES_ONLY=false
+INSTALL_HOOKS=false
 
 AGENTS=("heisenberg" "saul" "walter" "jesse" "skyler" "hank" "gus" "twins")
 SHARED_SCRIPTS=("self-heal.sh" "trash-agent-session.sh" "agent-health-check.sh")
@@ -26,6 +27,7 @@ Options:
   --skip-prereq-check  Skip openclaw/node prerequisite checks
   --runtime-only       Apply only ~/.openclaw/agents runtime files
   --workspaces-only    Apply only ~/openclaw-agents workspaces
+  --install-hooks      Install git hooks (auto-apply after git pull)
   --help, -h           Show this help
 EOF
 }
@@ -215,6 +217,9 @@ while [ $# -gt 0 ]; do
     --workspaces-only)
       WORKSPACES_ONLY=true
       ;;
+    --install-hooks)
+      INSTALL_HOOKS=true
+      ;;
     --help|-h)
       usage
       exit 0
@@ -255,6 +260,18 @@ fi
 
 if [ "$VERIFY" = true ]; then
   verify_apply
+fi
+
+if [ "$INSTALL_HOOKS" = true ]; then
+  log_section "🪝 Installing git hooks"
+  HOOKS_SRC="$REPO_DIR/scripts/hooks"
+  HOOKS_DST="$REPO_DIR/.git/hooks"
+  if [ -f "$HOOKS_SRC/post-merge" ]; then
+    ln -sf "$HOOKS_SRC/post-merge" "$HOOKS_DST/post-merge"
+    echo "  ✓ post-merge → auto-apply after git pull"
+  else
+    echo "  ⚠ scripts/hooks/post-merge not found" >&2
+  fi
 fi
 
 log_section "✅ Apply finished"
