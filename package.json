@@ -9,7 +9,7 @@
   "dependencies": {
     "@marp-team/marp-cli": "^4.0.0",
     "pptxgenjs": "^3.12.0",
-    "mcp-remote": "^1.0.0"
+    "mcp-remote": "^0.1.38"
   },
   "scripts": {
     "apply": "bash scripts/apply.sh",
